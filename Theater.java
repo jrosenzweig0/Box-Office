@@ -2,6 +2,8 @@
 package assignment6;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Formatter;
 
 public class Theater {
 	/*
@@ -27,7 +29,23 @@ public class Theater {
 
 		@Override
 		public String toString() {
-			// TODO: Implement this method to return the full Seat location ex: A1
+		    String s = "";
+		    int l = Integer.toString(Integer.parseInt(Integer.toString(x), 10), 26).length();
+		    int count = 0;
+		    int x = seatNum;
+		    while (true){
+		      if (l > 1 && count == l-1){
+		        s = s + (char)(x%27 + 64);
+		        break;
+		      }
+		      s = s + (char)(x%26 + 65);
+		      x = x-(x%26);
+		      x = x/26;
+		      if(x == 0) break;
+		      count++;
+		    }
+		    String reverse = new StringBuffer(s).reverse().toString();
+		    return reverse + Integer.toString(seatNum);
 		}
 	}
 
@@ -65,12 +83,29 @@ public class Theater {
 
 		@Override
 		public String toString() {
-			// TODO: Implement this method to return a string that resembles a ticket
+	    	String s = "-------------------------------" + "\n";
+			Formatter fmt0 = new Formatter();
+			s = s + "| " + fmt0.format("%-28s", "Show: " + show) + "|\n";	
+			Formatter fmt1 = new Formatter();
+			s = s + "| " + fmt1.format("%-28s", "Box Office: " + boxOfficeId) + "|\n";	
+			Formatter fmt2 = new Formatter();
+			s = s + "| " + fmt2.format("%-28s", "Ticket: " + seat.toString()) + "|\n";	
+			Formatter fmt3 = new Formatter();
+			s = s + "| " + fmt3.format("%-28s", "Client: " + Integer.toString(client)) + "|\n";	
+			s = s + "-------------------------------" + "\n";
+			return s;
+
 		}
 	}
-
+	public static ArrayList<Seat> BestSeat;
+	public static ArrayList<Ticket> TransactionLog;
+	
 	public Theater(int numRows, int seatsPerRow, String show) {
-		// TODO: Implement this constructor
+		for(int i = 0; i < numRows; i++) {
+			for(int j = 0; j < seatsPerRow; j++) {
+				BestSeat.add(new Seat(i,j));
+			}
+		}
 	}
 
 	/*
@@ -79,7 +114,9 @@ public class Theater {
  	 * @return the best seat or null if theater is full
    */
 	public Seat bestAvailableSeat() {
-		//TODO: Implement this method
+		Seat x = BestSeat.get(0);
+		BestSeat.remove(x);
+		return x;
 	}
 
 	/*
@@ -90,7 +127,10 @@ public class Theater {
    * @return a ticket or null if a box office failed to reserve the seat
    */
 	public Ticket printTicket(String boxOfficeId, Seat seat, int client) {
-		//TODO: Implement this method
+		Ticket t = new Ticket("TPAB", boxOfficeId, seat, client);
+		System.out.print(t);
+		TransactionLog.add(t);
+		return t;
 	}
 
 	/*
@@ -99,6 +139,6 @@ public class Theater {
    * @return list of tickets sold
    */
 	public List<Ticket> getTransactionLog() {
-		//TODO: Implement this method
+		return TransactionLog;
 	}
 }
